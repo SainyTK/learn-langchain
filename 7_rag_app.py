@@ -1,3 +1,4 @@
+# https://python.langchain.com/v0.2/docs/tutorials/rag/
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 import bs4

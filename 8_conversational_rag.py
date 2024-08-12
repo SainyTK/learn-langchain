@@ -1,3 +1,4 @@
+# https://python.langchain.com/v0.2/docs/tutorials/qa_chat_history/
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 import bs4

@@ -1,3 +1,21 @@
+# ---
+# jupyter:
+#   jupytext:
+#     cell_metadata_filter: -all
+#     custom_cell_magics: kql
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.11.2
+#   kernelspec:
+#     display_name: .venv
+#     language: python
+#     name: python3
+# ---
+
+# %%
+# https://python.langchain.com/v0.2/docs/tutorials/sql_qa/
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain.chains import create_sql_query_chain
@@ -5,21 +23,27 @@ from langchain_community.utilities import SQLDatabase
 from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
 
+# %%
 from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.prebuilt import create_react_agent
 
+# %%
 import ast
 import re
 
+# %%
 from langchain.agents.agent_toolkits import create_retriever_tool
 from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
 
+# %%
 load_dotenv(override=True)
 
+# %%
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 db = SQLDatabase.from_uri("sqlite:///data/Chinook.db")
 
+# %%
 # Note: This doesn't work as the AI always produces incorrect syntax SQL
 def direct_connect():
     chain = create_sql_query_chain(llm, db)
@@ -31,6 +55,7 @@ def direct_connect():
     result = db.run(formatted_query)
     print(db.run(result)) 
 
+# %%
 # Note: This doesn't work as the AI always produces incorrect syntax SQL
 def sql_chain_connect():
     execute_query = QuerySQLDataBaseTool(db=db)
@@ -39,6 +64,7 @@ def sql_chain_connect():
     response = chain.invoke({"question": "How many employees are there."})
     print(response)
 
+# %%
 # Note: This works well. There is a tool to check to correct SQL syntax (by AI itself, though)
 def agent_db_connect():
     toolkit = SQLDatabaseToolkit(db=db, llm=llm)
@@ -68,13 +94,15 @@ def agent_db_connect():
     ):
         print(s)
         print("----")
-        
+
+# %%
 def query_as_list(db, query):
     res = db.run(query)
     res = [el for sub in ast.literal_eval(res) for el in sub if el]
     res = [re.sub(r"\b\d+\b", "", string).strip() for string in res]
     return list(set(res))
 
+# %%
 def dealing_with_proper_nouns():
     toolkit = SQLDatabaseToolkit(db=db, llm=llm)
     tools = toolkit.get_tools()
@@ -117,7 +145,8 @@ def dealing_with_proper_nouns():
     ):
         print(s)
         print("----")
-    
+
+# %%
 # direct_connect()
 # sql_chain_connect()
 # agent_db_connect()
