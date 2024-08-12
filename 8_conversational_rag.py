@@ -23,7 +23,7 @@ load_dotenv(override=True)
 store = {}
 memory = SqliteSaver.from_conn_string(":memory:")
 
-llm = ChatOpenAI(model="gpt-3.5-turbo-0125")
+llm = ChatOpenAI(model="gpt-4o-mini")
 
 loader = WebBaseLoader(
     web_paths=("https://lilianweng.github.io/posts/2023-06-23-agent/",),
